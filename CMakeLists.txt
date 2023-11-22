@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 project(raylib_cpp_roguelike LANGUAGES CXX)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -46,13 +50,23 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(RlImGui)
 
 
+FetchContent_Declare(
+    spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG "master"
+)
+FetchContent_MakeAvailable(spdlog)
+
+
+
+
 add_executable(${PROJECT_NAME} main.cpp 
     src/Entity.cpp 
     src/Core/IntVector2.cpp 
     src/Core/Grid.cpp
     src/Core/World.cpp
     src/Commands/MoveCommand.cpp) 
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib imgui RlImGui)
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib imgui RlImGui spdlog)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${RLIMGUI_HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${RLIMGUI_HEADERS} 

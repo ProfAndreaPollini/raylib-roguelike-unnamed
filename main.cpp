@@ -1,11 +1,25 @@
+
+#include <iostream>
+#if defined(_WIN32)
+#define NOGDI  // All GDI defines and routines
+#define NOUSER // All USER defines and routines
+#endif
+
+#include "spdlog/spdlog.h"
+
+#if defined(_WIN32) // raylib uses these names as function parameters
+#undef near
+#undef far
+#endif
+
 #include "raylib.h"
-// #include "imgui.h"
-#include "Entity.h"
-#include "Grid.h"
-#include "World.h"
 
 #include "imgui.h"
 #include "rlImGui.h"
+
+#include "Entity.h"
+#include "Grid.h"
+#include "World.h"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -16,6 +30,12 @@ int main(void)
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1600;
     const int screenHeight = 900;
+
+    auto console = spdlog::stdout_color_mt("console");
+    console->set_level(spdlog::level::debug);
+    console->set_pattern("[multi_sink_example] [%H:%M:%S:%f] [%^%L%$]: %v");
+
+    spdlog::get("console")->info("loggers can be retrieved from a ");
 
     SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
